@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LifeOS - Your Intelligent Life Operating System</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 40px;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 3rem;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .header p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+        }
+
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            margin-bottom: 30px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: #2c3e50;
+        }
+
+        input, textarea, select {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #e1e8ed;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: border-color 0.3s ease;
+        }
+
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: #667eea;
+        }
+
+        textarea {
+            resize: vertical;
+            min-height: 120px;
+        }
+
+        button {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: transform 0.2s ease;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+        }
+
+        .events-container {
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            overflow: hidden;
+        }
+
+        .event {
+            padding: 25px;
+            border-bottom: 1px solid #f0f0f0;
+            transition: background-color 0.2s ease;
+        }
+
+        .event:hover {
+            background-color: #f8f9fa;
+        }
+
+        .event:last-child {
+            border-bottom: none;
+        }
+
+        .event-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .event-type {
+            background: #e74c3c;
+            color: white;
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .event-type.thought { background: #3498db; }
+        .event-type.action { background: #27ae60; }
+        .event-type.metric { background: #f39c12; }
+
+        .event-timestamp {
+            color: #7f8c8d;
+            font-size: 14px;
+        }
+
+        .event-content {
+            margin-bottom: 15px;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+
+        .event-meta {
+            display: flex;
+            gap: 20px;
+            font-size: 14px;
+            color: #7f8c8d;
+            align-items: center;
+        }
+
+        .delete-btn {
+            background: #e74c3c;
+            color: white;
+            padding: 6px 12px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .delete-btn:hover {
+            background: #c0392b;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px;
+            color: #7f8c8d;
+            font-size: 18px;
+        }
+
+        .error {
+            background: #e74c3c;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+
+        .api-status {
+            text-align: center;
+            margin-bottom: 20px;
+            padding: 10px;
+            border-radius: 8px;
+            font-weight: 600;
+        }
+
+        .api-status.online {
+            background: #27ae60;
+            color: white;
+        }
+
+        .api-status.offline {
+            background: #e74c3c;
+            color: white;
+        }
+
+        .config-section {
+            background: rgba(255,255,255,0.1);
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: white;
+        }
+
+        .config-section h3 {
+            margin-bottom: 10px;
+        }
+
+        .config-section input {
+            background: rgba(255,255,255,0.9);
+            border: none;
+        }
+
+        .success {
+            background: #27ae60;
+            color: white;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            font-weight: 600;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>LifeOS</h1>
+            <p>Your Intelligent Life Operating System</p>
+        </div>
+
+        <div class="config-section">
+            <h3>API Configuration</h3>
+            <div class="form-group">
+                <label for="apiUrl">API Gateway URL:</label>
+                <input type="text" id="apiUrl" placeholder="https://your-api-gateway-url.amazonaws.com/dev" value="https://izwpdqekd5.execute-api.eu-west-1.amazonaws.com/dev">
+            </div>
+            <div id="apiStatus" class="api-status offline">Checking API status...</div>
+        </div>
+
+        <div class="form-container">
+            <form id="eventForm">
+                <div class="form-group">
+                    <label for="content">What's on your mind?</label>
+                    <textarea id="content" name="content" required placeholder="Write your thoughts, actions, or observations..."></textarea>
+                </div>
+
+                <div class="form-group">
+                    <label for="type">Type</label>
+                    <select id="type" name="type">
+                        <option value="thought">Thought</option>
+                        <option value="action">Action</option>
+                        <option value="metric">Metric</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label for="emotion">Emotion (optional)</label>
+                    <input type="text" id="emotion" name="emotion" placeholder="e.g., happy, anxious, calm">
+                </div>
+
+                <div class="form-group">
+                    <label for="energy">Energy Level (1-10, optional)</label>
+                    <input type="number" id="energy" name="energy" min="1" max="10" placeholder="1-10">
+                </div>
+
+                <button type="submit">Add Event</button>
+            </form>
+        </div>
+
+        <div class="events-container">
+            <div id="eventsList">
+                <div class="loading">Loading events...</div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let API_BASE = 'https://izwpdqekd5.execute-api.eu-west-1.amazonaws.com/dev/api';
+
+        // Update API URL when input changes
+        document.getElementById('apiUrl').addEventListener('input', function(e) {
+            API_BASE = e.target.value + '/api';
+            checkApiStatus();
+        });
+
+        // Check API status
+        async function checkApiStatus() {
+            const statusDiv = document.getElementById('apiStatus');
+            try {
+                const response = await fetch(`${API_BASE}/health`);
+                if (response.ok) {
+                    statusDiv.textContent = '✅ API Online - Connected to AWS Lambda';
+                    statusDiv.className = 'api-status online';
+                    loadEvents();
+                } else {
+                    throw new Error('API not responding');
+                }
+            } catch (error) {
+                statusDiv.textContent = '❌ API Offline - Check your configuration';
+                statusDiv.className = 'api-status offline';
+            }
+        }
+
+        // Load events on page load
+        document.addEventListener('DOMContentLoaded', checkApiStatus);
+
+        // Handle form submission
+        document.getElementById('eventForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const formData = new FormData(e.target);
+            const eventData = {
+                content: formData.get('content'),
+                type: formData.get('type'),
+                emotion: formData.get('emotion') || null,
+                energy: formData.get('energy') ? parseInt(formData.get('energy')) : null
+            };
+
+            try {
+                const response = await fetch(`${API_BASE}/events`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify(eventData)
+                });
+
+                if (response.ok) {
+                    e.target.reset();
+                    loadEvents();
+                    showSuccess('Event added successfully!');
+                } else {
+                    const error = await response.json();
+                    showError(error.error || 'Failed to add event');
+                }
+            } catch (error) {
+                showError('Failed to add event - check your API configuration');
+            }
+        });
+
+        async function loadEvents() {
+            try {
+                const response = await fetch(`${API_BASE}/events`);
+                const events = await response.json();
+                displayEvents(events);
+            } catch (error) {
+                showError('Failed to load events - check your API configuration');
+            }
+        }
+
+        function displayEvents(events) {
+            const eventsList = document.getElementById('eventsList');
+            
+            if (events.length === 0) {
+                eventsList.innerHTML = '<div class="loading">No events yet. Add your first thought!</div>';
+                return;
+            }
+
+            eventsList.innerHTML = events.map(event => `
+                <div class="event">
+                    <div class="event-header">
+                        <span class="event-type ${event.type}">${event.type}</span>
+                        <span class="event-timestamp">${formatDate(event.timestamp)}</span>
+                    </div>
+                    <div class="event-content">${event.content}</div>
+                    <div class="event-meta">
+                        ${event.emotion ? `<span>😊 ${event.emotion}</span>` : ''}
+                        ${event.energy ? `<span>⚡ Energy: ${event.energy}/10</span>` : ''}
+                        <button class="delete-btn" onclick="deleteEvent('${event._id}')">Delete</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        async function deleteEvent(id) {
+            if (!confirm('Are you sure you want to delete this event?')) return;
+
+            try {
+                const response = await fetch(`${API_BASE}/events/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    loadEvents();
+                    showSuccess('Event deleted successfully!');
+                } else {
+                    showError('Failed to delete event');
+                }
+            } catch (error) {
+                showError('Failed to delete event');
+            }
+        }
+
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleString();
+        }
+
+        function showError(message) {
+            const errorDiv = document.createElement('div');
+            errorDiv.className = 'error';
+            errorDiv.textContent = message;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(errorDiv, container.firstChild);
+            
+            setTimeout(() => errorDiv.remove(), 5000);
+        }
+
+        function showSuccess(message) {
+            const successDiv = document.createElement('div');
+            successDiv.className = 'success';
+            successDiv.textContent = message;
+            
+            const container = document.querySelector('.container');
+            container.insertBefore(successDiv, container.firstChild);
+            
+            setTimeout(() => successDiv.remove(), 3000);
+        }
+    </script>
+</body>
+</html> 

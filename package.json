@@ -6,13 +6,18 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "serverless:dev": "serverless offline start",
+    "serverless:deploy": "serverless deploy",
+    "serverless:remove": "serverless remove",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [
     "lifeos",
     "personal",
     "journaling",
-    "mongodb"
+    "mongodb",
+    "serverless",
+    "aws"
   ],
   "author": "",
   "license": "MIT",
@@ -20,9 +25,12 @@
     "cors": "^2.8.5",
     "dotenv": "^16.3.1",
     "express": "^4.18.2",
-    "mongodb": "^6.17.0"
+    "mongodb": "^6.3.0"
   },
   "devDependencies": {
-    "nodemon": "^3.0.2"
+    "nodemon": "^3.0.2",
+    "serverless": "^3.38.0",
+    "serverless-offline": "^13.3.0",
+    "serverless-dotenv-plugin": "^6.0.0"
   }
 }

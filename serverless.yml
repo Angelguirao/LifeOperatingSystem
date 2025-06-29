@@ -1,0 +1,80 @@
+service: lifeos-backend
+
+frameworkVersion: '3'
+
+provider:
+  name: aws
+  runtime: nodejs18.x
+  region: eu-west-1
+  timeout: 30
+  memorySize: 512
+  environment:
+    MONGODB_URI: ${env:MONGODB_URI}
+  iam:
+    role:
+      statements:
+        - Effect: Allow
+          Action:
+            - logs:CreateLogGroup
+            - logs:CreateLogStream
+            - logs:PutLogEvents
+          Resource: '*'
+
+functions:
+  getEvents:
+    handler: functions/events.getEvents
+    timeout: 30
+    memorySize: 512
+    events:
+      - http:
+          path: /api/events
+          method: get
+          cors: true
+
+  createEvent:
+    handler: functions/events.createEvent
+    timeout: 30
+    memorySize: 512
+    events:
+      - http:
+          path: /api/events
+          method: post
+          cors: true
+
+  getEvent:
+    handler: functions/events.getEvent
+    timeout: 30
+    memorySize: 512
+    events:
+      - http:
+          path: /api/events/{id}
+          method: get
+          cors: true
+
+  deleteEvent:
+    handler: functions/events.deleteEvent
+    timeout: 30
+    memorySize: 512
+    events:
+      - http:
+          path: /api/events/{id}
+          method: delete
+          cors: true
+
+  health:
+    handler: functions/health.health
+    timeout: 10
+    memorySize: 256
+    events:
+      - http:
+          path: /api/health
+          method: get
+          cors: true
+
+plugins:
+  - serverless-dotenv-plugin
+  - serverless-offline
+
+custom:
+  serverless-offline:
+    httpPort: 3001 
